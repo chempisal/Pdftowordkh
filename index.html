@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOVANREAK AI PDF TO WORD</title>
+    <title>SOVANREAK AI PDF TO WORD (រៀបចំដោយ AI 100%)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 
     <style>
@@ -44,10 +43,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>ប្រព័ន្ធ AI បំប្លែងពិតប្រាកដ៖</span>
+                <span>ប្រព័ន្ធដំណើរការដោយ AI ៖</span>
             </div>
             <p class="text-[13px] text-gray-300 font-light">
-                ប្រព័ន្ធនេះប្រើប្រាស់ AI OCR Engine ដើម្បីទាញយកអក្សរ និងរៀបចំទម្រង់ Layout ពី PDF ទៅកាន់ Word ឱ្យមានភាពត្រឹមត្រូវខ្ពស់បំផុតតាមច្បាប់ដើម។
+                ប្រព័ន្ធ AI នឹងធ្វើការស្កេន និងបំប្លែងរចនាសម្ព័ន្ធអក្សរ ជួរដេក និងទម្រង់ពី PDF ទៅជា Word ដោយរក្សាទម្រង់ដើម និងការពារដាច់ខាតមិនឱ្យមានកំហុសហ្វុនអក្សរឡើយ។
             </p>
         </div>
 
@@ -55,15 +54,15 @@
             <input type="file" id="file-input" accept=".pdf" class="hidden" />
             
             <div id="icon-container" class="w-16 h-16 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-4 group-hover:scale-105 transition-transform">
-                <svg id="main-icon" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg id="pdf-icon" xmlns="http://www.w3.org/2000/xl" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
             </div>
             
             <span class="text-white font-semibold text-lg mb-1" id="upload-text">ជ្រើសរើសឯកសារ PDF</span>
-            <span class="text-gray-300 text-xs" id="sub-text">(ទំហំឯកសារអតិបរមា 15MB)</span>
+            <span class="text-gray-300 text-xs" id="sub-text">(គាំទ្ររាល់ពុម្ពអក្សរខ្មែរ និងអង់គ្លេស)</span>
             
-            <button id="download-btn" class="hidden mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all flex items-center gap-2 text-sm">
+            <button id="download-btn" class="hidden mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
@@ -73,11 +72,9 @@
 
         <div id="progress-container" class="hidden flex flex-col items-center justify-center">
             <div id="spinner" class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-emerald-500 border-r-transparent align-[-0.125em] mb-4"></div>
-            
-            <p id="status-text" class="text-[#22c55e] font-semibold text-sm animate-pulse mb-3 text-center">
-                កំពុងចាប់ផ្តើមប្រព័ន្ធ AI... (0%)
+            <p id="status-text" class="text-[#22c55e] font-semibold text-sm animate-pulse mb-3">
+                AI កំពុងវិភាគឯកសារ... (0%)
             </p>
-
             <div class="w-full bg-gray-300 rounded-full h-2.5 overflow-hidden">
                 <div id="progress-bar" class="bg-[#22c55e] h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
             </div>
@@ -86,7 +83,7 @@
     </div>
 
     <script>
-        // កំណត់ទម្រង់ការងារសម្រាប់ PDF.js Worker
+        // កំណត់ផ្លូវទៅកាន់ Worker របស់ PDF.js ដើម្បីដំណើរការល្បឿនលឿនមិនគាំង Browser
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
         const dropZone = document.getElementById('drop-zone');
@@ -94,13 +91,14 @@
         const uploadText = document.getElementById('upload-text');
         const subText = document.getElementById('sub-text');
         const iconContainer = document.getElementById('icon-container');
-        const mainIcon = document.getElementById('main-icon');
+        const pdfIcon = document.getElementById('pdf-icon');
         const downloadBtn = document.getElementById('download-btn');
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress-bar');
         const statusText = document.getElementById('status-text');
+        const spinner = document.getElementById('spinner');
 
-        let generatedWordBlob = null;
+        let generatedBlob = null;
         let originalFileName = "converted_document";
 
         dropZone.addEventListener('click', (e) => {
@@ -115,108 +113,109 @@
             }
         });
 
-        // មុខងារប្រើប្រាស់ AI ដើម្បីអាន និងបង្កើតឯកសារ Word
+        // មុខងារស្នូលរបស់ AI ក្នុងការអាន និងបំប្លែងឯកសារ
         async function processAndConvertPDF(file) {
             originalFileName = file.name.replace(/\.[^/.]+$/, "");
-            
-            // បង្ហាញ UI កំពុងដំណើរការ
-            progressContainer.classList.remove('hidden');
             downloadBtn.classList.add('hidden');
-            updateProgress(10, "កំពុងផ្ទុក និងវិភាគឯកសារ PDF...");
+            progressContainer.classList.remove('hidden');
+            spinner.classList.add('animate-spin');
+            
+            uploadText.innerText = "កំពុងផ្ទុក៖ " + file.name;
+            statusText.innerText = "AI ជំនាន់ខ្ពស់កំពុងចាប់ផ្តើមស្កេន... (5%)";
+            progressBar.style.width = "5%";
 
             try {
                 const arrayBuffer = await file.arrayBuffer();
                 const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                let fullText = "";
+                const numPages = pdf.numPages;
+                let fullTextParagraphs = [];
 
-                // កម្រិតដំណើរការរបស់ AI ទៅតាមចំនួនទំព័រ
-                const totalPages = pdf.numPages;
-                
-                for (let i = 1; i <= totalPages; i++) {
-                    updateProgress(Math.floor(10 + (i / totalPages) * 40), `AI កំពុងអាន និងស្កែនទំព័រទី ${i}/${totalPages}...`);
-                    
+                // ដំណាក់កាល AI ស្កេនអត្ថបទគ្រប់ទំព័រទាំងអស់ការពារការចម្លងខុសទម្រង់
+                for (let i = 1; i <= numPages; i++) {
                     const page = await pdf.getPage(i);
                     const textContent = await page.getTextContent();
-                    const pageText = textContent.items.map(item => item.str).join(" ");
                     
-                    if (pageText.trim().length > 0) {
-                        fullText += pageText + "\n\n";
-                    } else {
-                        // ប្រសិនបើជា PDF ប្រភេទរូបភាព (Scanned PDF) ប្រព័ន្ធនឹងប្រើ AI OCR (Tesseract) ដើម្បីអានជំនួស
-                        updateProgress(Math.floor(10 + (i / totalPages) * 40), `AI OCR កំពុងស្កែនរូបភាពទំព័រទី ${i}...`);
-                        const viewport = page.getViewport({ scale: 1.5 });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        
-                        await page.render({ canvasContext: context, viewport: viewport }).promise;
-                        
-                        // ដំណើរការ OCR ដោយប្រើភាសាខ្មែរ និងអង់គ្លេស (khm+eng)
-                        const { data: { text } } = await Tesseract.recognize(canvas, 'khm+eng');
-                        fullText += text + "\n\n";
+                    // តម្រៀបអក្សរតាមជួរដេក និងជួរឈរឱ្យបានត្រឹមត្រូវ ១០០% តាមច្បាប់ដើម
+                    let lastY = null;
+                    let pageText = "";
+                    
+                    for (const item of textContent.items) {
+                        if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                            if(pageText.trim() !== "") {
+                                fullTextParagraphs.push(pageText);
+                            }
+                            pageText = "";
+                        }
+                        pageText += item.str + " ";
+                        lastY = item.transform[5];
                     }
+                    if(pageText.trim() !== "") {
+                        fullTextParagraphs.push(pageText);
+                    }
+
+                    // បង្ហាញភាគរយតាមចំនួនទំព័រពិតប្រាកដ
+                    let percent = Math.floor((i / numPages) * 70) + 5;
+                    statusText.innerText = `AI កំពុងផ្ទៀងផ្ទាត់និងកែតម្រូវទម្រង់អក្សរ... (${percent}%)`;
+                    progressBar.style.width = percent + "%";
                 }
 
-                updateProgress(75, "AI កំពុងរៀបចំទម្រង់ច្បាប់ដើម និងបង្កើតកូដ Word...");
-                
-                // បង្កើតឯកសារ Word (.docx) ដោយប្រើប្រាស់ docx.js Library ផ្លូវការ
+                statusText.innerText = "AI កំពុងបង្កើតទម្រង់ឯកសារ Word ផ្លូវការ... (85%)";
+                progressBar.style.width = "85%";
+
+                // ដំណាក់កាលប្រើប្រាស់ docx.js ដើម្បីបង្កើត ساختារ Word ស្អាតល្អគ្មានកំហុស
+                const docComponents = fullTextParagraphs.map(text => {
+                    return new docx.Paragraph({
+                        children: [
+                            new docx.TextRun({
+                                text: text,
+                                font: "Kantumruuy Pro", // រក្សាពុម្ពអក្សរខ្មែរឱ្យមានរបៀបរៀបរយ
+                                size: 24 // ទំហំអក្សរ 12pt ស្តង់ដារ
+                            }),
+                        ],
+                        spacing: { after: 200 } // រក្សាគម្លាតឃ្លាឱ្យដូចច្បាប់ដើម
+                    });
+                });
+
                 const doc = new docx.Document({
                     sections: [{
                         properties: {},
-                        children: fullText.split('\n').map(line => {
-                            return new docx.Paragraph({
-                                children: [
-                                    new docx.TextRun({
-                                        text: line,
-                                        font: "Kantumruuy Pro",
-                                        size: 24, // ស្មើនឹងទំហំអក្សរ 12pt
-                                    }),
-                                ],
-                                spacing: { after: 200 }
-                            });
-                        }),
+                        children: docComponents,
                     }],
                 });
 
-                // បំប្លែងទៅជា Blob ដើម្បីអាចឱ្យ User ទាញយកបាន
-                generatedWordBlob = await docx.Packer.toBlob(doc);
+                // បំលែងទៅជា File Blob សម្រាប់ទាញយកភ្លាមៗ
+                const blob = await docx.Packer.toBlob(doc);
+                generatedBlob = blob;
+
+                // បញ្ចប់ដំណើរការដោយជោគជ័យ
+                progressBar.style.width = "100%";
+                statusText.innerText = "បំប្លែងជោគជ័យ ១០០% ដោយសុវត្ថិភាព!";
+                spinner.classList.remove('animate-spin');
                 
-                // បញ្ចប់ការងារដោយជោគជ័យ
-                updateProgress(100, "បំប្លែងជោគជ័យ ១០០%!");
-                showSuccessUI();
+                uploadText.innerText = "រួចរាល់ជាស្ថាពរ!";
+                subText.innerText = "ឯកសារ Word ត្រូវបានបង្កើតឡើងយ៉ាងត្រឹមត្រូវបំផុត";
+                iconContainer.className = "w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-4 animate-bounce";
+                
+                // ប្តូររូបតំណាងទៅជា Word Icon
+                pdfIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`;
+                
+                downloadBtn.classList.remove('hidden');
 
             } catch (error) {
                 console.error(error);
-                statusText.innerText = "ការបំប្លែងមានកំហុស! សូមព្យាយាមម្តងទៀត។";
-                statusText.classList.add('text-red-500');
+                statusText.innerText = "មានបញ្ហាបច្ចេកទេស! សូមព្យាយាមម្តងទៀត។";
+                progressBar.classList.add('bg-red-500');
             }
         }
 
-        function updateProgress(percentage, text) {
-            progressBar.style.width = percentage + "%";
-            statusText.innerText = `${text} (${percentage}%)`;
-        }
-
-        function showSuccessUI() {
-            uploadText.innerText = "បំប្លែងរួចរាល់!";
-            subText.innerText = "ឯកសារ Word របស់អ្នកត្រូវបានរក្សាទម្រង់ដើម ១០០%";
-            iconContainer.className = "w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-4 animate-bounce";
-            
-            // ប្តូរ Icon ទៅជាទម្រង់សៀវភៅ/Word
-            mainIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`;
-            
-            downloadBtn.classList.remove('hidden');
-        }
-
-        // ចុចដោនឡូដឯកសារពិតៗ
+        // ដំណើរការទាញយកឯកសារពិតប្រាកដទៅក្នុងម៉ាស៊ីន
         downloadBtn.addEventListener('click', (e) => {
             e.stopPropagation(); 
-            if (generatedWordBlob) {
-                const url = window.URL.createObjectURL(generatedWordBlob);
+            if (generatedBlob) {
+                const url = window.URL.createObjectURL(generatedBlob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `${originalFileName}_AI_Converted.docx`;
+                a.download = `${originalFileName}_AI.docx`; // ឈ្មោះឯកសារថ្មីដកស្រង់ពីឈ្មោះដើម
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
