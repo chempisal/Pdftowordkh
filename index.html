@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOVANREAK AI PDF TO WORD (Powered by Gemini)</title>
+    <title>SOVANREAK AI PDF TO WORD</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
     <style>
         body {
@@ -23,63 +23,71 @@
 
     <div class="w-full max-w-md bg-[#e1e5e2] rounded-3xl p-6 shadow-2xl border-4 border-[#3ca25d]/30 relative overflow-hidden">
         
-        <div class="mb-4 text-xs">
-            <label class="block text-gray-700 font-bold mb-1">បញ្ចូល Gemini API Key របស់អ្នក៖</label>
-            <input type="password" id="api-key" class="w-full p-2 border rounded-xl text-center" placeholder="AIzaSy..." value="">
-        </div>
+        <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold">✕</button>
 
-        <div class="flex justify-center mb-4">
-            <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center border-2 border-gray-200 p-1 shadow-md">
-                <div class="w-full h-full bg-gradient-to-tr from-blue-600 to-green-500 rounded-full flex flex-col items-center justify-center text-white text-[9px] font-bold leading-none">
-                    <span class="text-yellow-300 font-extrabold text-xs">NSR</span>
+        <div class="flex justify-center mb-6">
+            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center border-2 border-gray-200 p-1 shadow-md">
+                <div class="w-full h-full bg-gradient-to-tr from-blue-600 to-green-500 rounded-full flex flex-col items-center justify-center text-white text-[10px] font-bold leading-none">
+                    <span class="text-yellow-300 font-extrabold text-sm">NSR</span>
                     <span>TECHNOLOGY</span>
                 </div>
             </div>
         </div>
 
-        <h1 class="text-center text-xl font-black text-[#89b83b] tracking-wide mb-4 uppercase">
+        <h1 class="text-center text-xl md:text-2xl font-black text-[#89b83b] tracking-wide mb-6 uppercase">
             SOVANREAK AI PDF TO WORD
         </h1>
 
-        <div class="bg-[#1f293d] text-gray-300 rounded-xl p-4 mb-4 text-xs leading-relaxed shadow-inner">
-            <div class="flex items-center gap-2 mb-1 text-[#4ade80] font-semibold">
-                <span>ตួនាទីរបស់ឧបករណ៍នេះ៖</span>
+        <div class="bg-[#1f293d] text-gray-300 rounded-xl p-4 mb-6 text-sm leading-relaxed shadow-inner">
+            <div class="flex items-center gap-2 mb-2 text-[#4ade80] font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>តួនាទីរបស់ឧបករណ៍នេះ៖</span>
             </div>
-            <p class="text-[12px] text-gray-300 font-light">
-                ឧបករណ៍បំប្លែងឯកសារនេះប្រើប្រាស់ **Gemini AI** ដើម្បីអាន និងបំប្លែងអត្ថបទខ្មែរ ឬអង់គ្លេសពី PDF ទៅជាឯកសារ Word (.docx) ផ្លូវការ។
+            <p class="text-[13px] text-gray-300 font-light">
+                ឧបករណ៍បំប្លែងឯកសារ PDF ទៅជា Word នេះត្រូវបានបំពាក់ដោយប្រព័ន្ធស្រង់ទិន្នន័យឆ្លាតវៃ (AI) របស់មជ្ឈមណ្ឌលសុវណ្ណរាជ។ វាដំណើរការយ៉ាងលឿននៅលើ Browser ដោយមិនចាំបាច់បញ្ជូនឯកសារទៅកាន់ Server ឡើយ សុវត្ថិភាពខ្ពស់បំផុត។
             </p>
         </div>
 
-        <div id="drop-zone" class="bg-[#7c8b96] hover:bg-[#6c7b86] transition-all rounded-2xl p-6 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 cursor-pointer text-center group mb-4">
+        <div id="drop-zone" class="bg-[#7c8b96] hover:bg-[#6c7b86] transition-all rounded-2xl p-8 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 cursor-pointer text-center group mb-6">
             <input type="file" id="file-input" accept=".pdf" class="hidden" />
             
-            <div id="icon-container" class="w-14 h-14 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-3 transition-transform">
-                <svg id="pdf-icon" xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div id="icon-container" class="w-16 h-16 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-4 group-hover:scale-105 transition-transform">
+                <svg id="pdf-icon" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
             </div>
             
-            <span class="text-white font-semibold text-base mb-1" id="upload-text">ជ្រើសរើសឯកសារ PDF</span>
-            <span class="text-gray-300 text-xs" id="sub-text">(គាំទ្ររាល់ឯកសារអត្ថបទ និងរូបភាព)</span>
+            <span class="text-white font-semibold text-lg mb-1" id="upload-text">ជ្រើសរើសឯកសារ PDF</span>
+            <span class="text-gray-300 text-xs" id="sub-text">(ទំហំឯកសារអតិបរមា 15MB)</span>
             
             <button id="download-btn" class="hidden mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
                 ទាញយកឯកសារ Word
             </button>
         </div>
 
         <div id="progress-container" class="hidden flex flex-col items-center justify-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-emerald-500 border-r-transparent align-[-0.125em] mb-3"></div>
-            <p id="status-text" class="text-[#22c55e] font-semibold text-xs animate-pulse mb-2">
-                កំពុងដំណើរការ...
+            <div id="spinner" class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-emerald-500 border-r-transparent align-[-0.125em] mb-4"></div>
+            
+            <p id="status-text" class="text-[#22c55e] font-semibold text-sm animate-pulse mb-3">
+                កំពុងចាប់ផ្តើមអានឯកសារ... (0%)
             </p>
-            <div class="w-full bg-gray-300 rounded-full h-2 overflow-hidden">
-                <div id="progress-bar" class="bg-[#22c55e] h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+
+            <div class="w-full bg-gray-300 rounded-full h-2.5 overflow-hidden">
+                <div id="progress-bar" class="bg-[#22c55e] h-2.5 rounded-full transition-all duration-200" style="width: 0%"></div>
             </div>
         </div>
 
     </div>
 
     <script>
+        // Setup PDF.js Worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('file-input');
         const uploadText = document.getElementById('upload-text');
@@ -90,10 +98,12 @@
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress-bar');
         const statusText = document.getElementById('status-text');
-        const apiKeyInput = document.getElementById('api-key');
+        const spinner = document.getElementById('spinner');
 
-        let convertedText = ""; 
+        let generatedBlobUrl = null;
+        let originalFileName = "converted_document";
 
+        // Open file selector
         dropZone.addEventListener('click', (e) => {
             if (e.target !== downloadBtn && !downloadBtn.contains(e.target)) {
                 fileInput.click();
@@ -102,103 +112,105 @@
 
         fileInput.addEventListener('change', (e) => {
             if(e.target.files.length > 0) {
-                processPdfWithGemini(e.target.files[0]);
+                processAndConvertPDF(e.target.files[0]);
             }
         });
 
-        // មុខងារអានឯកសារ និងផ្ញើទៅ Gemini API
-        async function processPdfWithGemini(file) {
-            const apiKey = apiKeyInput.value.trim();
-            if(!apiKey) {
-                alert("សូមបញ្ចូល Gemini API Key របស់អ្នកជាមុនសិន!");
-                return;
-            }
-
-            // បង្ហាញ Loading Status
+        // Core Function: Read PDF Text and Convert to Word (.docx)
+        async function processAndConvertPDF(file) {
+            // UI Initialization
             progressContainer.classList.remove('hidden');
             downloadBtn.classList.add('hidden');
-            updateProgress(20, "កំពុងអានឯកសារ PDF...");
-
+            spinner.classList.add('animate-spin');
+            originalFileName = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension
+            
+            uploadText.innerText = "កំពុងវិភាគឯកសារ៖ " + file.name;
+            subText.innerText = "AI កំពុងដំណើរការស្រង់អត្ថបទ...";
+            
             try {
-                // បំប្លែងឯកសារទៅជា Base64 
-                const base64Data = await fileToBase64(file);
-                const base64Raw = base64Data.split(',')[1];
-
-                updateProgress(50, "កំពុងផ្ញើទៅកាន់ Gemini AI ដើម្បីបំប្លែង...");
-
-                // ហៅទៅកាន់ Gemini API (ប្រើប្រាស់ម៉ូដែល gemini-1.5-flash ដើម្បីល្បឿនលឿន)
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: "Extract all text from this document and format it cleanly. Preserve the paragraphs and language correctly (especially Khmer or English text)." },
-                                { inlineData: { mimeType: file.type, data: base64Raw } }
-                            ]
-                        }]
-                    })
-                });
-
-                const json = await response.json();
+                const fileReader = new FileReader();
                 
-                if(json.candidates && json.candidates[0].content.parts[0].text) {
-                    convertedText = json.candidates[0].content.parts[0].text;
+                fileReader.onload = async function() {
+                    const typedarray = new Uint8Array(this.result);
                     
-                    updateProgress(100, "បំប្លែងជោគជ័យ!");
-                    
-                    // ប្តូរ UI ទៅជាជោគជ័យ
-                    uploadText.innerText = "បំប្លែងរួចរាល់!";
-                    subText.innerText = "ចុចប៊ូតុងខាងក្រោមដើម្បីទាញយកឯកសារ Word";
-                    iconContainer.className = "w-14 h-14 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-3 animate-bounce";
-                    pdfIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`;
-                    
-                    downloadBtn.classList.remove('hidden');
-                } else {
-                    throw new Error("មិនអាចស្រង់អត្ថបទបានទេ ឬ API Key ខុស។");
-                }
+                    // 1. Load PDF Document via PDF.js
+                    const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                    const numPages = pdf.numPages;
+                    let fullTextContent = [];
+
+                    // 2. Extract Text Page by Page
+                    for (let i = 1; i <= numPages; i++) {
+                        // Progress calculation
+                        let percent = Math.round((i / numPages) * 100);
+                        progressBar.style.width = percent + "%";
+                        statusText.innerText = `AI កំពុងអាន និងកែតម្រូវអក្សរទំព័រទី ${i}/${numPages}... (${percent}%)`;
+
+                        const page = await pdf.getPage(i);
+                        const textContent = await page.getTextContent();
+                        
+                        // Combine text items from the current page
+                        let pageText = textContent.items.map(item => item.str).join(" ");
+                        fullTextContent.push(pageText);
+                    }
+
+                    statusText.innerText = "កំពុងរៀបចំទម្រង់ Word (DOCX)...";
+
+                    // 3. Create Word Document using 'docx' library
+                    const docSections = fullTextContent.map(text => {
+                        return {
+                            properties: {},
+                            children: text.split('\n').map(para => new docx.Paragraph({
+                                children: [new docx.TextRun({ text: para, size: 24 })], // size 24 equals 12pt
+                                spacing: { after: 200 }
+                            }))
+                        };
+                    });
+
+                    const doc = new docx.Document({
+                        sections: docSections
+                    });
+
+                    // 4. Generate Blob and create download link
+                    docx.Packer.toBlob(doc).then(blob => {
+                        generatedBlobUrl = URL.createObjectURL(blob);
+                        
+                        // Finalize UI Success State
+                        progressBar.style.width = "100%";
+                        statusText.innerText = "បំប្លែងជោគជ័យ ១០០%!";
+                        spinner.classList.remove('animate-spin');
+                        
+                        uploadText.innerText = "បំប្លែងរួចរាល់!";
+                        subText.innerText = "ឯកសារ Word របស់អ្នករួចរាល់សម្រាប់ទាញយក";
+                        iconContainer.className = "w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-4 animate-bounce";
+                        
+                        // Change icon to Document style
+                        pdfIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`;
+                        
+                        downloadBtn.classList.remove('hidden');
+                    });
+                };
+
+                fileReader.readAsArrayBuffer(file);
 
             } catch (error) {
                 console.error(error);
-                alert("មានបញ្ហាក្នុងការបំប្លែង៖ " + error.message);
-                updateProgress(0, "ការបំប្លែងបរាជ័យ!");
+                statusText.innerText = "មានបញ្ហាក្នុងការបំប្លែង! សូមព្យាយាមម្តងទៀត។";
+                subText.innerText = "សូមប្រាកដថាជាឯកសារ PDF ត្រឹមត្រូវ។";
             }
         }
 
-        // មុខងារបង្កើតឯកសារ Word (.docx) ពិតប្រាកដចេញពីអត្ថបទរបស់ Gemini
+        // Download Action
         downloadBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            
-            const doc = new docx.Document({
-                sections: [{
-                    properties: {},
-                    children: convertedText.split('\n').map(line => {
-                        return new docx.Paragraph({
-                            children: [new docx.TextRun({ text: line, size: 24, font: "Kantumruuy Pro" })],
-                        });
-                    }),
-                }],
-            });
-
-            docx.Packer.toBlob(doc).then(blob => {
-                saveAs(blob, "Sovanreak_Converted_Document.docx");
-            });
+            e.stopPropagation(); // prevent re-triggering file input
+            if (generatedBlobUrl) {
+                const link = document.createElement('a');
+                link.href = generatedBlobUrl;
+                link.download = `${originalFileName}_converted.docx`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
         });
-
-        // Helper Functions
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
-        }
-
-        function updateProgress(percentage, text) {
-            progressBar.style.width = percentage + "%";
-            statusText.innerText = text;
-        }
     </script>
 </body>
 </html>
