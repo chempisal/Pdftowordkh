@@ -8,20 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <style>
-        body {
-            font-family: 'Kantumruuy Pro', sans-serif;
-            background-color: #0b3a1a;
-        }
+        body { font-family: 'Kantumruuy Pro', sans-serif; background-color: #0b3a1a; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
     <div class="w-full max-w-md bg-[#e1e5e2] rounded-3xl p-6 shadow-2xl border-4 border-[#3ca25d]/30 relative overflow-hidden">
         
-        <button class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-xl font-bold">✕</button>
-
         <div class="flex justify-center mb-6">
             <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center border-2 border-gray-200 p-1 shadow-md">
                 <div class="w-full h-full bg-gradient-to-tr from-blue-600 to-green-500 rounded-full flex flex-col items-center justify-center text-white text-[10px] font-bold leading-none">
@@ -35,23 +29,11 @@
             SOVANREAK AI PDF TO WORD
         </h1>
 
-        <div class="bg-[#1f293d] text-gray-300 rounded-xl p-4 mb-6 text-sm leading-relaxed shadow-inner">
-            <div class="flex items-center gap-2 mb-2 text-[#4ade80] font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>តួនាទីរបស់ឧបករណ៍នេះ៖</span>
-            </div>
-            <p class="text-[13px] text-gray-300 font-light">
-                ឧបករណ៍បំប្លែងឯកសារ PDF ទៅជា Word នេះត្រូវបានបំពាក់ដោយបច្ចេកវិទ្យាបញ្ញាសិប្បនិម្មិត (AI) កម្រិតខ្ពស់បំផុតរបស់មជ្ឈមណ្ឌលសុវណ្ណរាជ។ វាមានសមត្ថភាពអាន និងវិភាគរាល់ទិន្នន័យទាំងអស់។
-            </p>
-        </div>
-
         <div id="drop-zone" class="bg-[#7c8b96] hover:bg-[#6c7b86] transition-all rounded-2xl p-8 flex flex-col items-center justify-center border-2 border-dashed border-gray-400 cursor-pointer text-center group mb-6">
             <input type="file" id="file-input" accept=".pdf" class="hidden" />
             
-            <div id="icon-container" class="w-16 h-16 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-4 group-hover:scale-105 transition-transform">
-                <svg id="pdf-icon" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div id="icon-container" class="w-16 h-16 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-4">
+                <svg id="status-icon" xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
             </div>
@@ -59,24 +41,19 @@
             <span class="text-white font-semibold text-lg mb-1" id="upload-text">ជ្រើសរើសឯកសារ PDF</span>
             <span class="text-gray-300 text-xs" id="sub-text">(ទំហំឯកសារអតិបរមា 15MB)</span>
             
-            <button id="download-btn" class="hidden mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2 mx-auto">
+            <a id="download-link" class="hidden mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-xl shadow-md transition-all flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                 </svg>
                 ទាញយកឯកសារ Word
-            </button>
+            </a>
         </div>
 
         <div id="progress-container" class="hidden flex flex-col items-center justify-center">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-emerald-500 border-r-transparent align-[-0.125em] mb-4"></div>
-            
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-emerald-500 border-r-transparent mb-4"></div>
             <p id="status-text" class="text-[#22c55e] font-semibold text-sm animate-pulse mb-3">
-                កំពុងចាប់ផ្តើមអានឯកសារ... (0%)
+                កំពុងផ្ញើឯកសារទៅកាន់ Gemini AI...
             </p>
-
-            <div class="w-full bg-gray-300 rounded-full h-2.5 overflow-hidden">
-                <div id="progress-bar" class="bg-[#22c55e] h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
-            </div>
         </div>
 
     </div>
@@ -87,115 +64,58 @@
         const uploadText = document.getElementById('upload-text');
         const subText = document.getElementById('sub-text');
         const iconContainer = document.getElementById('icon-container');
-        const pdfIcon = document.getElementById('pdf-icon');
-        const downloadBtn = document.getElementById('download-btn');
-        
+        const downloadLink = document.getElementById('download-link');
         const progressContainer = document.getElementById('progress-container');
-        const progressBar = document.getElementById('progress-bar');
         const statusText = document.getElementById('status-text');
 
-        let originalFileName = "converted_document";
-
-        // Click to open file dialog
         dropZone.addEventListener('click', (e) => {
-            if (e.target !== downloadBtn && !downloadBtn.contains(e.target)) {
-                fileInput.click();
-            }
+            if (e.target !== downloadLink && !downloadLink.contains(e.target)) fileInput.click();
         });
 
-        // Handle file selection
         fileInput.addEventListener('change', (e) => {
-            if(e.target.files.length > 0) {
-                const file = e.target.files[0];
-                // រក្សាទុកឈ្មោះឯកសារចាស់ ដើម្បីយកទៅដាក់ឈ្មោះឱ្យឯកសារ Word ថ្មី
-                originalFileName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-                startConversion(file.name);
-            }
+            if(e.target.files.length > 0) uploadAndConvert(e.target.files[0]);
         });
 
-        // Simulation function
-        function startConversion(fileName) {
-            downloadBtn.classList.add('hidden');
+        async function uploadAndConvert(file) {
+            // បង្ហាញ Loading
             progressContainer.classList.remove('hidden');
-            iconContainer.className = "w-16 h-16 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-4";
-            
-            uploadText.innerText = "កំពុងផ្ទុកឡើង៖ " + fileName;
-            subText.innerText = "សូមរង់ចាំមួយភ្លែត...";
+            downloadLink.classList.add('hidden');
+            uploadText.innerText = "កំពុងដំណើរការ...";
+            statusText.innerText = "Gemini AI កំពុងវិភាគ និងបំប្លែងអត្ថបទខ្មែរ...";
 
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 15) + 5; 
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // Conversion Complete State
-                    statusText.innerText = "បំប្លែងជោគជ័យ ១០០%!";
-                    progressBar.style.width = "100%";
-                    
-                    uploadText.innerText = "បំប្លែងរួចរាល់!";
-                    subText.innerText = "ឯកសារ Word របស់អ្នករួចរាល់សម្រាប់ទាញយក";
-                    iconContainer.className = "w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-4 animate-bounce";
-                    
-                    // Change PDF Icon to Word Icon Style
-                    pdfIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`;
-                    
-                    // Show Download Button
-                    downloadBtn.classList.remove('hidden');
-                } else {
-                    progressBar.style.width = progress + "%";
-                    if(progress < 40) {
-                        statusText.innerText = `កំពុងអានទិន្នន័យឯកសារ... (${progress}%)`;
-                    } else if(progress < 80) {
-                        statusText.innerText = `កំពុងប្រើប្រាស់ AI កែតម្រូវអក្សរ... (${progress}%)`;
-                    } else {
-                        statusText.innerText = `កំពុងរៀបចំទម្រង់ Word... (${progress}%)`;
-                    }
-                }
-            }, 300);
+            const formData = new FormData();
+            formData.append('pdf_file', file);
+
+            try {
+                // ផ្ញើទៅកាន់ Backend (រត់នៅលើ Localhost Port 5000)
+                const response = await fetch('http://localhost:5000/convert', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) throw new Error('ការបំប្លែងមានបញ្ហា');
+
+                // ទទួលយក File Word (Blob) ពី Backend
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                
+                // រៀបចំដូរ UI ទៅជាជោគជ័យ
+                progressContainer.classList.add('hidden');
+                uploadText.innerText = "បំប្លែងជោគជ័យ!";
+                subText.innerText = "ចុចប៊ូតុងខាងក្រោមដើម្បីទាញយក";
+                iconContainer.className = "w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-4 animate-bounce";
+                
+                // បើកប៊ូតុងទាញយក
+                downloadLink.href = downloadUrl;
+                downloadLink.download = file.name.replace('.pdf', '.docx');
+                downloadLink.classList.remove('hidden');
+
+            } catch (error) {
+                alert("កំហុស៖ " + error.message);
+                progressContainer.classList.add('hidden');
+                uploadText.innerText = "ជ្រើសរើសឯកសារ PDF ម្តងទៀត";
+            }
         }
-
-        // --- ត្រង់ចំណុចដំណើរការទាញយកពិតប្រាកដ (Real Download Function) ---
-        downloadBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // ការពារកុំឱ្យបើកប្រអប់រើសឯកសារម្តងទៀត
-            
-            // ១. បង្កើតមាតិកាអក្សរគំរូនៅក្នុងឯកសារ Word (HTML Format)
-            const wordContent = `
-                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-                <head>
-                    <title>Converted Document</title>
-                    <style>
-                        body { font-family: 'Kantumruuy Pro', 'Khmer OS Battambang', sans-serif; }
-                        h1 { color: #1e3a8a; text-align: center; }
-                    </style>
-                </head>
-                <body>
-                    <h1>លទ្ធផលនៃការបំប្លែងឯកសារដោយ SOVANREAK AI</h1>
-                    <p>ឯកសាររបស់អ្នកឈ្មោះ <b>${originalFileName}.pdf</b> ត្រូវបានបំប្លែងទៅជាទម្រង់ Word រួចរាល់ហើយដោយជោគជ័យ។</p>
-                    <p>នេះជាអត្ថបទគំរូ៖ សូមស្វាគមន៍មកកាន់ប្រព័ន្ធ NSR Technology!</p>
-                </body>
-                </html>
-            `;
-
-            // ២. បង្កើត Blob ជាប្រភេទឯកសារ Word (.doc)
-            const blob = new Blob(['\ufeff' + wordContent], {
-                type: 'application/msword'
-            });
-
-            // ៣. បង្កើតតំណភ្ជាប់ (URL) បណ្តោះអាសន្នសម្រាប់ទាញយក
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            
-            // ៤. កំណត់ឈ្មោះឯកសារពេលទាញយក (យកឈ្មោះដើម រួចប្តូរកន្ទុយទៅជា .doc)
-            a.download = originalFileName + ".doc";
-            
-            // ៥. ចុចទាញយកដោយស្វ័យប្រវត្ត រួចលុបតំណភ្ជាប់ចោលវិញ
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
     </script>
 </body>
 </html>
