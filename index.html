@@ -149,7 +149,7 @@
 
         // ២. មុខងារផ្ញើអត្ថបទទៅឱ្យ Gemini AI ជួយរៀបចំ និងកែសម្រួល
         async function sendToGemini(text) {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${AQ.Ab8RN6LBSTeQfiyHxqNATdKZRbpZ4d6k6WDl93Q1Ysm6UjIPVQ}`;
             
             const prompt = `You are an expert document converter. Clean up, fix any broken Khmer spelling/spacing, and format the following raw text extracted from a PDF. Keep the original structure, paragraphs, and meaning perfectly. Return ONLY the cleaned text, no greetings or explanations:\n\n${text}`;
 
