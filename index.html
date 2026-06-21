@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kantumruuy+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
-    <script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+    <script src="https://unpkg.com/docx@8.0.0/build/index.js"></script>
 
     <style>
         body {
@@ -46,7 +46,7 @@
                 <span>តួនាទីរបស់ឧបករណ៍នេះ៖</span>
             </div>
             <p class="text-[13px] text-gray-300 font-light">
-                ឧបករណ៍បំប្លែងឯកសារ PDF ទៅជា Word នេះត្រូវបានបំពាក់ដោយប្រព័ន្ធស្រង់ទិន្នន័យឆ្លាតវៃ (AI) របស់មជ្ឈមណ្ឌលសុវណ្ណរាជ។ វាដំណើរការយ៉ាងលឿននៅលើ Browser ដោយមិនចាំបាច់បញ្ជូនឯកសារទៅកាន់ Server ឡើយ សុវត្ថិភាពខ្ពស់បំផុត។
+                ឧបករណ៍បំប្លែងឯកសារ PDF ទៅជា Word នេះដំណើរការដោយផ្ទាល់លើកម្មវិធីរុករក (Browser) របស់អ្នក។ វាអានអត្ថបទ និងរក្សាទម្រង់អក្សរខ្មែរឱ្យមានរបៀបរៀបរយ។
             </p>
         </div>
 
@@ -74,7 +74,7 @@
             <div id="spinner" class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-emerald-500 border-r-transparent align-[-0.125em] mb-4"></div>
             
             <p id="status-text" class="text-[#22c55e] font-semibold text-sm animate-pulse mb-3">
-                កំពុងចាប់ផ្តើមអានឯកសារ... (0%)
+                កំពុងចាប់ផ្តើម... (0%)
             </p>
 
             <div class="w-full bg-gray-300 rounded-full h-2.5 overflow-hidden">
@@ -85,7 +85,7 @@
     </div>
 
     <script>
-        // Setup PDF.js Worker
+        // Setup PDF.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
         const dropZone = document.getElementById('drop-zone');
@@ -95,15 +95,14 @@
         const iconContainer = document.getElementById('icon-container');
         const pdfIcon = document.getElementById('pdf-icon');
         const downloadBtn = document.getElementById('download-btn');
+        
         const progressContainer = document.getElementById('progress-container');
         const progressBar = document.getElementById('progress-bar');
         const statusText = document.getElementById('status-text');
-        const spinner = document.getElementById('spinner');
 
-        let generatedBlobUrl = null;
+        let generatedBlob = null;
         let originalFileName = "converted_document";
 
-        // Open file selector
         dropZone.addEventListener('click', (e) => {
             if (e.target !== downloadBtn && !downloadBtn.contains(e.target)) {
                 fileInput.click();
@@ -112,78 +111,92 @@
 
         fileInput.addEventListener('change', (e) => {
             if(e.target.files.length > 0) {
-                processAndConvertPDF(e.target.files[0]);
+                handleFile(e.target.files[0]);
             }
         });
 
-        // Core Function: Read PDF Text and Convert to Word (.docx)
-        async function processAndConvertPDF(file) {
-            // UI Initialization
-            progressContainer.classList.remove('hidden');
+        function updateProgress(percent, message) {
+            progressBar.style.width = percent + "%";
+            statusText.innerText = `${message} (${percent}%)`;
+        }
+
+        async function handleFile(file) {
+            if (file.type !== "application/pdf") {
+                alert("សូមជ្រើសរើសតែឯកសារប្រភេទ PDF តែប៉ុណ្ណោះ!");
+                return;
+            }
+
+            originalFileName = file.name.replace(/\.[^/.]+$/, ""); // Get name without extension
             downloadBtn.classList.add('hidden');
-            spinner.classList.add('animate-spin');
-            originalFileName = file.name.replace(/\.[^/.]+$/, ""); // get filename without extension
+            progressContainer.classList.remove('hidden');
+            document.getElementById('spinner').classList.add('animate-spin');
             
-            uploadText.innerText = "កំពុងវិភាគឯកសារ៖ " + file.name;
-            subText.innerText = "AI កំពុងដំណើរការស្រង់អត្ថបទ...";
-            
+            iconContainer.className = "w-16 h-16 bg-[#22c55e] rounded-xl flex items-center justify-center shadow-md mb-4";
+            uploadText.innerText = "កំពុងដំណើរការ៖ " + file.name;
+            subText.innerText = "សូមរង់ចាំការវិភាគពី AI...";
+
             try {
+                updateProgress(10, "កំពុងអានឯកសារ PDF...");
                 const fileReader = new FileReader();
                 
                 fileReader.onload = async function() {
                     const typedarray = new Uint8Array(this.result);
                     
-                    // 1. Load PDF Document via PDF.js
+                    // Load PDF document
                     const pdf = await pdfjsLib.getDocument(typedarray).promise;
                     const numPages = pdf.numPages;
-                    let fullTextContent = [];
+                    let fullText = [];
 
-                    // 2. Extract Text Page by Page
+                    updateProgress(30, "AI កំពុងវិភាគ និងស្រង់អត្ថបទ...");
+
+                    // Loop through pages to extract text
                     for (let i = 1; i <= numPages; i++) {
-                        // Progress calculation
-                        let percent = Math.round((i / numPages) * 100);
-                        progressBar.style.width = percent + "%";
-                        statusText.innerText = `AI កំពុងអាន និងកែតម្រូវអក្សរទំព័រទី ${i}/${numPages}... (${percent}%)`;
-
                         const page = await pdf.getPage(i);
                         const textContent = await page.getTextContent();
+                        const pageText = textContent.items.map(item => item.str).join(" ");
+                        fullText.push(pageText);
                         
-                        // Combine text items from the current page
-                        let pageText = textContent.items.map(item => item.str).join(" ");
-                        fullTextContent.push(pageText);
+                        // Dynamic progress calculation based on pages
+                        let pageProgress = 30 + Math.floor((i / numPages) * 40);
+                        updateProgress(pageProgress, `AI កំពុងអានទំព័រទី ${i}/${numPages}...`);
                     }
 
-                    statusText.innerText = "កំពុងរៀបចំទម្រង់ Word (DOCX)...";
+                    updateProgress(80, "កំពុងរៀបចំកែតម្រូវអក្សរខ្មែរទៅជាទម្រង់ Word...");
 
-                    // 3. Create Word Document using 'docx' library
-                    const docSections = fullTextContent.map(text => {
-                        return {
-                            properties: {},
-                            children: text.split('\n').map(para => new docx.Paragraph({
-                                children: [new docx.TextRun({ text: para, size: 24 })], // size 24 equals 12pt
-                                spacing: { after: 200 }
-                            }))
-                        };
+                    // Generate Word Document using docx.js
+                    const docParagraphs = fullText.map(text => {
+                        return new docx.Paragraph({
+                            children: [
+                                new docx.TextRun({
+                                    text: text,
+                                    font: "Kantumruuy Pro",
+                                    size: 24, // 12pt
+                                }),
+                            ],
+                            spacing: { after: 200 }
+                        });
                     });
 
                     const doc = new docx.Document({
-                        sections: docSections
+                        sections: [{
+                            properties: {},
+                            children: docParagraphs,
+                        }],
                     });
 
-                    // 4. Generate Blob and create download link
+                    // Convert to blob
                     docx.Packer.toBlob(doc).then(blob => {
-                        generatedBlobUrl = URL.createObjectURL(blob);
+                        generatedBlob = blob;
                         
-                        // Finalize UI Success State
-                        progressBar.style.width = "100%";
-                        statusText.innerText = "បំប្លែងជោគជ័យ ១០០%!";
-                        spinner.classList.remove('animate-spin');
+                        // Success State UI
+                        updateProgress(100, "បំប្លែងជោគជ័យ ១០០%!");
+                        document.getElementById('spinner').classList.remove('animate-spin');
                         
                         uploadText.innerText = "បំប្លែងរួចរាល់!";
-                        subText.innerText = "ឯកសារ Word របស់អ្នករួចរាល់សម្រាប់ទាញយក";
+                        subText.innerText = "លោកអ្នកអាចទាញយកឯកសារ Word បានហើយ";
                         iconContainer.className = "w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center shadow-md mb-4 animate-bounce";
                         
-                        // Change icon to Document style
+                        // Change icon to Document/Word style
                         pdfIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />`;
                         
                         downloadBtn.classList.remove('hidden');
@@ -194,21 +207,23 @@
 
             } catch (error) {
                 console.error(error);
-                statusText.innerText = "មានបញ្ហាក្នុងការបំប្លែង! សូមព្យាយាមម្តងទៀត។";
-                subText.innerText = "សូមប្រាកដថាជាឯកសារ PDF ត្រឹមត្រូវ។";
+                alert("មានបញ្ហាក្នុងការបំប្លែងឯកសារ! សូមព្យាយាមម្តងទៀត។");
+                updateProgress(0, "ការបំប្លែងបរាជ័យ");
             }
         }
 
-        // Download Action
+        // Trigger real download when clicking download button
         downloadBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // prevent re-triggering file input
-            if (generatedBlobUrl) {
-                const link = document.createElement('a');
-                link.href = generatedBlobUrl;
-                link.download = `${originalFileName}_converted.docx`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
+            e.stopPropagation(); 
+            if (generatedBlob) {
+                const url = window.URL.createObjectURL(generatedBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = originalFileName + ".docx";
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
             }
         });
     </script>
